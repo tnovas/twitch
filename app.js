@@ -1,8 +1,7 @@
-let request = require('request-promise');
+let request = require('axios');
 
 class Twitch {
-
-	constructor(clientId, clientSecret, redirectUrl, scopes, accessToken='', refreshToken='', userLogin='', userId='') {
+	constructor(clientId, clientSecret, redirectUrl, scopes, userLogin='', userId='', accessToken='', refreshToken='') {
 		this.__credentials = {
 			clientId: clientId,
 			clientSecret: clientSecret,
@@ -31,14 +30,15 @@ class Twitch {
 		return {
 			accessToken: this.__credentials.accessToken,
 			refreshToken: this.__credentials.refreshToken,
-			channelId: this.__credentials.channelId
+			userLogin: this.__credentials.userLogin,
+			userId: this.__credentials.userId
 		}
 	}
 
-	getStream(error) {
+	getStream(success, error) {
 		let url = `${this.__urlApi.base}${this.__urlApi.streams}/${this.__credentials.channelId}`;
 
-		this.__get(url, {}, (result) => result, error);
+		this.__get(url, {}, success, error);
 	}
 
 	connect(code, success, error) {
@@ -58,7 +58,7 @@ class Twitch {
 	    }, error);
 	}
 
-	__get(url, qs, success, error) {
+	__get(url, qs={}, success, error) {
 		request({
 		    method: 'GET',
 		    url: url,

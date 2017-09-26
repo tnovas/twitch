@@ -12,7 +12,9 @@ describe('Twitch', function() {
 			"clientId", 
 			"clientSecret", 
 			"redirectUrl", 
-			"user:edit+user:read:email");
+			"user:edit+user:read:email",
+			"userLogin",
+			"userId");
 
 	    urlApi = {
 			base: 'https://api.twitch.tv/',
@@ -38,8 +40,8 @@ describe('Twitch', function() {
 			scopes: "user:edit+user:read:email",
 			accessToken: '',
 			refreshToken: '',
-			userLogin: '',
-			userId: ''
+			userLogin: 'userLogin',
+			userId: 'userId'
 		};
 		
 		expect(JSON.stringify(twitch.__credentials)).to.equal(JSON.stringify(credentials));
@@ -57,7 +59,7 @@ describe('Twitch', function() {
                 .post()             
                 .reply(200, {access_token: 'token', refresh_token: 'token'});
 
-		twitch.connect('code', () => expect(twitch.__credentials.accessToken).to.equal("token"));
+		twitch.connect('code', () => expect(twitch.__credentials.accessToken).to.equal("token"), () => {});
 	})
 
 	it('getStream() should get live stream information', function() {
@@ -67,41 +69,33 @@ describe('Twitch', function() {
                 .get(`${urlApi.streams}${twitch.__credentials.userId}`)
                 .reply(200, {stream: { viewers: 10 }});
 
-		twitch.getStream((live) => expect(10).to.equal(live.stream.viewers));
+		twitch.getStream((live) => expect(10).to.equal(live.stream.viewers), () => {});
 	});
 
 	it('getStream() should get offline stream information', function() {
 		var scope = nock(urlApi.base, {
 			      reqheaders: headers
 			    })
-                .get(`${urlApi.streams}/${twitch.userId}`)
+                .get(`${urlApi.streams}/${twitch.__credentials.userId}`)
                 .reply(200, {stream: null});
 
-		twitch.getStream((live) => expect(null).to.equal(live.stream));
-	});
-
-	it('getStream() should get error', function() {
-		var scope = nock(urlApi.base, {
-			      reqheaders: headers
-			    })
-                .get(`${urlApi.streams}/${twitch.userId}`)
-                .reply(500, {});
-
-		twitch.getStream((err) => console.log(err));
+		twitch.getStream((live) => expect(null).to.equal(live.stream), () => {});
 	});
 
 	it('getCredentials() should get credentials', function() {
 		var credentials = {
 			accessToken: 'token',
 			refreshToken: 'token',
-			channelId: 'channelId'	
+			userLogin: 'userLogin',
+			userId: 'userId'
 		};
 
 		twitch.__credentials = {
 			accessToken: 'token',
 			refreshToken: 'token',
-			channelId: 'channelId'		
-		}
+			userLogin: 'userLogin',
+			userId: 'userId'		
+		};
 
 		var result = twitch.getCredentials();
 
