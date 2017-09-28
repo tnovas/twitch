@@ -1,8 +1,11 @@
 var chai = require('chai');
 var expect = chai.expect;
 var request = require('request');
-var nock = require('nock');
 var Twitch = require('../app');
+var axios = require('axios');
+var MockAdapter = require('axios-mock-adapter');
+
+var mock = new MockAdapter(axios);
 
 describe('Twitch', function() {
 	var twitch, scope, urlApi, headers;
@@ -17,11 +20,12 @@ describe('Twitch', function() {
 			"userId");
 
 	    urlApi = {
-			base: 'https://api.twitch.tv/',
-			authorizate: 'kraken/oauth2/authorize',
-			accessTokenPath: 'kraken/oauth2/token',
-			channels: 'helix/users',
-			streams: 'helix/streams'
+			base: 'https://api.twitch.tv/helix/',
+			baseAuth: 'https://api.twitch.tv/kraken/oauth2/',
+			authorizate: 'authorize',
+			accessTokenPath: 'token',
+			channels: 'users',
+			streams: 'streams'
 		};
 
 		headers = {
@@ -34,49 +38,40 @@ describe('Twitch', function() {
 
 	it('constructor() should make credentials with params', function() {
 		var credentials = {
-			clientId: "clientId",
-			clientSecret: "clientSecret",
-			redirectUrl: "redirectUrl",
-			scopes: "user:edit+user:read:email",
-			accessToken: '',
-			refreshToken: '',
 			userLogin: 'userLogin',
 			userId: 'userId'
 		};
+
+		var urls = {
+			base: 'https://api.twitch.tv/helix/',
+			channels: 'users',
+			streams: 'streams'
+		};
 		
 		expect(JSON.stringify(twitch.__credentials)).to.equal(JSON.stringify(credentials));
-		expect(JSON.stringify(twitch.__urlApi)).to.equal(JSON.stringify(urlApi));
+		expect(JSON.stringify(twitch.__urlApi)).to.equal(JSON.stringify(urls));
 	});
 
 	it('authorizationUrl() should return Url of authorization', function() {
-		expect(twitch.authorizationUrl()).to.equal(`${urlApi.base}${urlApi.authorizate}?response_type=code&client_id=${twitch.__credentials.clientId}&redirect_uri=${twitch.__credentials.redirectUrl}&scope=${twitch.__credentials.scopes}`);
+		expect(twitch.authorizationUrl()).to.equal(`${urlApi.baseAuth}${urlApi.authorizate}?response_type=code&client_id=${twitch.__credentials.clientId}&redirect_uri=${twitch.__credentials.redirectUrl}&scope=${twitch.__credentials.scopes}`);
 	});
 
 	it('connect() should connect to Twitch and get accessToken with code', function() {
-		var scope = nock(`${urlApi.base}${urlApi.accessTokenPath}`, {
-			      reqheaders: headers
-			    })
-                .post()             
+		mock.onPost(`${urlApi.baseAuth}${urlApi.accessTokenPath}`)
                 .reply(200, {access_token: 'token', refresh_token: 'token'});
 
 		twitch.connect('code', () => expect(twitch.__credentials.accessToken).to.equal("token"), () => {});
 	})
 
 	it('getStream() should get live stream information', function() {
-		var scope = nock(urlApi.base, {
-			      reqheaders: headers
-			    })
-                .get(`${urlApi.streams}${twitch.__credentials.userId}`)
+		mock.onGet(`${urlApi.base}${urlApi.streams}${twitch.__credentials.userId}`)
                 .reply(200, {stream: { viewers: 10 }});
 
 		twitch.getStream((live) => expect(10).to.equal(live.stream.viewers), () => {});
 	});
 
 	it('getStream() should get offline stream information', function() {
-		var scope = nock(urlApi.base, {
-			      reqheaders: headers
-			    })
-                .get(`${urlApi.streams}/${twitch.__credentials.userId}`)
+		mock.onGet(`${urlApi.base}${urlApi.streams}${twitch.__credentials.userId}`)
                 .reply(200, {stream: null});
 
 		twitch.getStream((live) => expect(null).to.equal(live.stream), () => {});
@@ -85,16 +80,12 @@ describe('Twitch', function() {
 	it('getCredentials() should get credentials', function() {
 		var credentials = {
 			accessToken: 'token',
-			refreshToken: 'token',
-			userLogin: 'userLogin',
-			userId: 'userId'
+			refreshToken: 'token'
 		};
 
 		twitch.__credentials = {
 			accessToken: 'token',
-			refreshToken: 'token',
-			userLogin: 'userLogin',
-			userId: 'userId'		
+			refreshToken: 'token'
 		};
 
 		var result = twitch.getCredentials();
