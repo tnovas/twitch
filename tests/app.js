@@ -1,89 +1,82 @@
 var chai = require('chai');
 var expect = chai.expect;
-var request = require('request');
 var Twitch = require('../app');
 var axios = require('axios');
 var MockAdapter = require('axios-mock-adapter');
-
 var mock = new MockAdapter(axios);
 
-describe('Twitch', function() {
-	var twitch, scope, urlApi, headers;
+describe('Twitch', () => {
+	var twitch, scope, urls, credentials;
 
-	before(function() {
+	before(() => {
 	    twitch = new Twitch(
 			"clientId", 
 			"clientSecret", 
 			"redirectUrl", 
-			"user:edit+user:read:email",
+			"scopes",
 			"userLogin",
-			"userId");
+			"userId"
+		);
 
-	    urlApi = {
-			base: 'https://api.twitch.tv/helix/',
-			baseAuth: 'https://api.twitch.tv/kraken/oauth2/',
-			authorizate: 'authorize',
-			accessTokenPath: 'token',
-			channels: 'users',
-			streams: 'streams'
-		};
-
-		headers = {
-	      Authorization: `${twitch.accessToken}?OAuth ${twitch.accessToken}`,
-	      'Client-ID': twitch.clientId
+	    credentials = {
+	    	clientId: "clientId", 
+			clientSecret: "clientSecret", 
+			redirectUrl: "redirectUrl", 
+			scopes: "scopes",
+			accessToken: "token",
+			userLogin: "userLogin",
+			userId: "userId"
 	    };
 
-	  });
-
-
-	it('constructor() should make credentials with params', function() {
-		var credentials = {
-			userLogin: 'userLogin',
-			userId: 'userId'
-		};
-
-		var urls = {
+	    urls = {
+			baseAuth: 'https://api.twitch.tv/kraken/oauth2/',
+			authorizate: 'authorize',
+			token: 'token',
 			base: 'https://api.twitch.tv/helix/',
 			channels: 'users',
 			streams: 'streams'
 		};
-		
-		expect(JSON.stringify(twitch.__credentials)).to.equal(JSON.stringify(credentials));
-		expect(JSON.stringify(twitch.__urlApi)).to.equal(JSON.stringify(urls));
-	});
+	  });
 
-	it('authorizationUrl() should return Url of authorization', function() {
-		expect(twitch.authorizationUrl()).to.equal(`${urlApi.baseAuth}${urlApi.authorizate}?response_type=code&client_id=${twitch.__credentials.clientId}&redirect_uri=${twitch.__credentials.redirectUrl}&scope=${twitch.__credentials.scopes}`);
-	});
+	it('authorizationUrl() should return Url of authorization', () => 
+		expect(twitch.authorizationUrl()).to.equal(`${urls.baseAuth}${urls.authorizate}?response_type=code&client_id=${credentials.clientId}&redirect_uri=${credentials.redirectUrl}&scope=${credentials.scopes}`)
+	);
 
-	it('connect() should connect to Twitch and get accessToken with code', function() {
-		mock.onPost(`${urlApi.baseAuth}${urlApi.accessTokenPath}`)
-                .reply(200, {access_token: 'token', refresh_token: 'token'});
-
-		twitch.connect('code', () => expect(twitch.__credentials.accessToken).to.equal("token"), () => {});
-	})
-
-	it('getStream() should get live stream information', function() {
-		mock.onGet(`${urlApi.base}${urlApi.streams}${twitch.__credentials.userId}`)
-                .reply(200, {stream: { viewers: 10 }});
-
-		twitch.getStream((live) => expect(10).to.equal(live.stream.viewers), () => {});
-	});
-
-	it('getStream() should get offline stream information', function() {
-		mock.onGet(`${urlApi.base}${urlApi.streams}${twitch.__credentials.userId}`)
-                .reply(200, {stream: null});
-
-		twitch.getStream((live) => expect(null).to.equal(live.stream), () => {});
-	});
-
-	it('getCredentials() should get credentials', function() {
+	it('connect() should connect to twitch and get accessToken with code', () => {	
 		var credentials = {
 			accessToken: 'token',
 			refreshToken: 'token'
 		};
+		
+		mock.onPost(urls.token).replyOnce(200, {access_token: 'token', refresh_token: 'token'});
 
-		twitch.__credentials = {
+		twitch.connect('code', () => expect(JSON.stringify(twitch.getCredentials())).to.equal(JSON.stringify(credentials)), (err) => console.log(err));
+	});
+
+	it('connect() should throw error', () => {	
+		mock.onPost(urls.token).replyOnce(500);
+
+		twitch.connect('code', () => { }, (err) => expect(500).to.equal(err.response.status));
+	});
+
+	it('getStream() should get stream of user with user id', () => {	
+		var stream = {
+			viewer_count: 1000
+		};
+		
+		mock.onGet(`${urls.streams}/${credentials.userId}`).replyOnce(200, {viewer_count: 1000});
+
+		twitch.getStream((response) => expect(JSON.stringify(response.data)).to.equal(JSON.stringify(stream)), (err) => console.log(err));
+	});
+
+	it('getStream() should throw error', () => {	
+		mock.onGet(`${urls.streams}/${credentials.userId}`).replyOnce(500);
+
+		twitch.getStream(() => { }, (err) => expect(500).to.equal(err.response.status));
+	});	
+
+	it('getCredentials() should get credentials', () => {
+		var credentials = {
 			accessToken: 'token',
 			refreshToken: 'token'
 		};
