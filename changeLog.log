@@ -1,0 +1,7 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+## [1.0.0] - 2017-09-29
+### Added
+- Promises
+- Add msg of error in console when status code not is 200

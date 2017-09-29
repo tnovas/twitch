@@ -15,15 +15,15 @@
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "devDependencies": {
+    "axios-mock-adapter": "^1.9.0",
     "chai": "^4.1.2",
-    "coveralls": "^2.13.1",
+    "coveralls": "^2.13.3",
     "istanbul": "^0.4.5",
-    "mocha": "^3.5.3",
-    "axios-mock-adapter": "^1.9.0"
+    "mocha": "^3.5.3"
   },
   "dependencies": {
     "axios": "^0.16.2",
     "oauth20": "^1.0.4",
-    "request": "^2.82.0"
+    "request": "^2.83.0"
   }
 }

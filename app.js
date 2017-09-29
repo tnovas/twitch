@@ -22,19 +22,22 @@ class Twitch extends OAuth2 {
 		axios.defaults.baseurl = this[urls].base;
 	}
 
-	getStream(success, error) {
+	getStream() {
 		let url = `${this[urls].streams}/${this[credentials].userId}`;
 
-		this[get](url, success, error);
+		let request = this[get](url);
+		request.catch((err) => {
+			console.log(`status: ${err.response.status}, url: ${err.response.config.url}, params: ${err.response.config.params}, message: ${JSON.stringify(err.response.data)}`);
+		});
+
+		return request;
 	}
 
-	[get](url, success, error) {
-		axios({
+	[get](url) {
+		return axios({
 		    method: 'GET',
 		    url: url
-		})
-		.then(success)
-	    .catch(error);
+		});
 	}
 }
 

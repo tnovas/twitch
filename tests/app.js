@@ -50,13 +50,13 @@ describe('Twitch', () => {
 		
 		mock.onPost(urls.token).replyOnce(200, {access_token: 'token', refresh_token: 'token'});
 
-		twitch.connect('code', () => expect(JSON.stringify(twitch.getCredentials())).to.equal(JSON.stringify(credentials)), (err) => console.log(err));
+		twitch.connect('code').then(() => expect(JSON.stringify(twitch.getCredentials())).to.equal(JSON.stringify(credentials)));
 	});
 
-	it('connect() should throw error', () => {	
-		mock.onPost(urls.token).replyOnce(500);
+	it('connect() should throw error with a message', () => {	
+		mock.onPost(urls.token).replyOnce(500, { error: 'error' });
 
-		twitch.connect('code', () => { }, (err) => expect(500).to.equal(err.response.status));
+		twitch.connect('code').catch((err) => expect(500).to.equal(err.response.status));
 	});
 
 	it('getStream() should get stream of user with user id', () => {	
@@ -66,13 +66,13 @@ describe('Twitch', () => {
 		
 		mock.onGet(`${urls.streams}/${credentials.userId}`).replyOnce(200, {viewer_count: 1000});
 
-		twitch.getStream((response) => expect(JSON.stringify(response.data)).to.equal(JSON.stringify(stream)), (err) => console.log(err));
+		twitch.getStream().then((response) => expect(JSON.stringify(response.data)).to.equal(JSON.stringify(stream)));
 	});
 
-	it('getStream() should throw error', () => {	
-		mock.onGet(`${urls.streams}/${credentials.userId}`).replyOnce(500);
+	it('getStream() should throw error with a message', () => {	
+		mock.onGet(`${urls.streams}/${credentials.userId}`).replyOnce(500, { error: 'error' });
 
-		twitch.getStream(() => { }, (err) => expect(500).to.equal(err.response.status));
+		twitch.getStream().catch((err) => expect(500).to.equal(err.response.status));
 	});	
 
 	it('getCredentials() should get credentials', () => {
