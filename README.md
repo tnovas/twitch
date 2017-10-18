@@ -29,10 +29,10 @@ Give the credentials of the youtube to the constructor
 | **ClientSecret** | *The Client Secret* | **false** |
 | **RedirectUrl**  | *The RedirectUrl with format 'http://yourdomain/youraction'* | **false** |
 | **Scopes**       | *They are 2 scopes: user:edit user:read:email* | **false** |
-| **Channel**  | *The name of channel*  | **false** |
+| **UserLogin**  | *The name of your user login*  | **false** |
 
 ```js
-let twitch = new Twitch('clientId', 'clientSecret', 'http://yourdomain/youraction', 'user:edit+user:read:email', 'channelName');
+let twitch = new twitchApi('clientId', 'clientSecret', 'http://yourdomain/youraction', 'user:edit+user:read:email', 'channelName');
 ```
 
 ### Authorization
@@ -78,7 +78,6 @@ If you need to save credentials, you have to call `getCredentials` and you will 
 {
   accessToken,
   refreshToken,
-  expiresIn,
   userId
 }
 ```
