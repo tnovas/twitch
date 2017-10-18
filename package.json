@@ -7,7 +7,7 @@
     "url": "https://github.com/tnovas/twitch"
   },
   "email": "tnovas@gmail.com",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This module is a implementation of New Twitch API https://dev.twitch.tv/docs/api/reference",
   "main": "app.js",
   "scripts": {

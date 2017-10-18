@@ -11,7 +11,7 @@ node --version
 ```
 
 ## Installation:
-Add the latest version of `twitch` to your package.json:
+Add the latest version of `twitch-streamer` to your package.json:
 ```
 npm install twitch-streamer --save
 ```
