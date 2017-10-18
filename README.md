@@ -30,6 +30,7 @@ Give the credentials of the youtube to the constructor
 | **RedirectUrl**  | *The RedirectUrl with format 'http://yourdomain/youraction'* | **false** |
 | **Scopes**       | *They are 2 scopes: user:edit user:read:email* | **false** |
 | **UserLogin**  | *The name of your user login*  | **false** |
+| **AccessToken**  | *The access token if you have one* | **true** |
 
 ```js
 let twitch = new twitchApi('clientId', 'clientSecret', 'http://yourdomain/youraction', 'user:edit+user:read:email', 'channelName');

@@ -5,8 +5,8 @@ let urlsTwitch = Symbol('urlsTwitch');
 let getTwitch = Symbol('getTwitch');
 
 class Twitch extends OAuth2 {
-	constructor(clientId, clientSecret, redirectUrl, scopes, userLogin) {
-		super(clientId, clientSecret, redirectUrl, scopes, 'https://api.twitch.tv/kraken/oauth2/', 'authorize', 'token');
+	constructor(clientId, clientSecret, redirectUrl, scopes, userLogin, accessToken='') {
+		super(clientId, clientSecret, redirectUrl, scopes, accessToken, 'https://api.twitch.tv/kraken/oauth2/');
 		
 		this[credentialsTwitch] = {
 			userLogin: userLogin,

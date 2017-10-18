@@ -7,7 +7,7 @@
     "url": "https://github.com/tnovas/twitch"
   },
   "email": "tnovas@gmail.com",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "This module is a implementation of New Twitch API https://dev.twitch.tv/docs/api/reference",
   "main": "app.js",
   "scripts": {
@@ -24,8 +24,8 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "oauth20": "^1.0.4",
-    "request": "^2.83.0",
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "oauth20": "^2.0.0",
+    "request": "^2.83.0"
   }
 }
