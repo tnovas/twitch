@@ -5,11 +5,13 @@ let urlsTwitch = Symbol('urlsTwitch');
 let getTwitch = Symbol('getTwitch');
 
 class Twitch extends OAuth2 {
-	constructor(clientId, clientSecret, redirectUrl, scopes, userId) {
+	constructor(clientId, clientSecret, redirectUrl, scopes, userLogin) {
 		super(clientId, clientSecret, redirectUrl, scopes, 'https://api.twitch.tv/kraken/oauth2/', 'authorize', 'token');
 		
 		this[credentialsTwitch] = {
-			userId: userId
+			userLogin: userLogin,
+			clientId: clientId,
+			userId: ''
 		};
 		
 		this[urlsTwitch] = {
@@ -17,20 +19,30 @@ class Twitch extends OAuth2 {
 			streams: 'streams'
 		};
 
-		axios.defaults.baseurl = 'https://api.twitch.tv/helix/';
+		axios = axios.create({
+		  baseURL: 'https://api.twitch.tv/helix/'
+		});
 	}
 
 	getStream() {
-		let url = `${this[urlsTwitch].streams}/${this[credentialsTwitch].userId}`;
+		let url = this[urlsTwitch].streams;
+		let params = {
+			'user_login': this[credentialsTwitch].userLogin
+		};
 
-		return this[getTwitch](url);
+		return this[getTwitch](url, params);
 	}
 
-	[getTwitch](url) {
+	[getTwitch](url, params) {
 		return axios({
 		    method: 'GET',
-		    url: url
-		}).catch((err) => console.log(`status: ${err.response.status}, url: ${err.response.config.url}, params: ${err.response.config.params}, message: ${JSON.stringify(err.response.data)}`));
+		    url: url,
+		    params: params,
+		    headers: {
+		    	Authorization: `OAuth ${this.getCredentials().accessToken}`,
+		    	'Client-ID': this[credentialsTwitch].clientId
+			}
+		});
 	}
 }
 

@@ -14,7 +14,7 @@ describe('Twitch', () => {
 			"clientSecret", 
 			"redirectUrl", 
 			"scopes",
-			"userId"
+			"channel"
 		);
 
 	    credentials = {
