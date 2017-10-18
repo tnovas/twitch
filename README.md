@@ -13,12 +13,12 @@ node --version
 ## Installation:
 Add the latest version of `twitch` to your package.json:
 ```
-npm install twitch --save
+npm install twitch-streamer --save
 ```
 
 ## Usage:
 ```js
-let twitchApi = require('twitch');
+let twitchApi = require('twitch-streamer');
 ```
 
 Give the credentials of the youtube to the constructor
