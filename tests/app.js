@@ -14,7 +14,6 @@ describe('Twitch', () => {
 			"clientSecret", 
 			"redirectUrl", 
 			"scopes",
-			"userLogin",
 			"userId"
 		);
 
@@ -23,8 +22,6 @@ describe('Twitch', () => {
 			clientSecret: "clientSecret", 
 			redirectUrl: "redirectUrl", 
 			scopes: "scopes",
-			accessToken: "token",
-			userLogin: "userLogin",
 			userId: "userId"
 	    };
 
