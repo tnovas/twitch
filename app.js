@@ -19,7 +19,7 @@ class Twitch extends OAuth2 {
 			streams: 'streams'
 		};
 
-		axios = axios.create({
+		this.axiosTwitch = axios.create({
 		  baseURL: 'https://api.twitch.tv/helix/'
 		});
 	}
@@ -34,7 +34,7 @@ class Twitch extends OAuth2 {
 	}
 
 	[getTwitch](url, params) {
-		return axios({
+		return this.axiosTwitch({
 		    method: 'GET',
 		    url: url,
 		    params: params,
