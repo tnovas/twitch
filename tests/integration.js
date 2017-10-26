@@ -16,11 +16,11 @@ app.get('/connect', (req, res) => {
 });
 
 app.get('/connectChat', (req, res) => {
-	twitch.connectChat().then((result) => res.json(result.data)).catch((err) => res.json(err.response.data));
+	twitch.connectChat();
 });
 
 app.get('/liveChat', (req, res) => {
-	twitch.liveChat().then((result) => res.json(result.data)).catch((err) => res.json(err.response.data));
+	twitch.liveChat((from, msg)=> console.log(`${from} ${msg}`));
 });
 
 app.get('/reconnect', (req, res) => {

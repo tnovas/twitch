@@ -42,13 +42,10 @@ class Twitch extends OAuth2 {
 		return this[getTwitch](url, params);
 	}
 
-	liveChat() {
-		return this[chatTwitch].chatEvents.addListener('message', new Promise((channel, from, message) => {
-			return {
-				from: from,
-				message: message
-			}
-		}));
+	liveChat(callback) {
+		this[chatTwitch].chatEvents.addListener('message', (channel, from, msg) => {
+			callback(from, msg);
+		});
 	}
 
 	[getTwitch](url, params) {

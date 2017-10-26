@@ -28,7 +28,7 @@ Give the credentials of the youtube to the constructor
 | **ClientId**     | *The Client Id* | **false** |
 | **ClientSecret** | *The Client Secret* | **false** |
 | **RedirectUrl**  | *The RedirectUrl with format 'http://yourdomain/youraction'* | **false** |
-| **Scopes**       | *They are 2 scopes: user:edit user:read:email* | **false** |
+| **Scopes**       | *They are 3 scopes: user:edit user:read:email chat_login* | **false** |
 | **UserLogin**  | *The name of your user login*  | **false** |
 | **AccessToken**  | *The access token if you have one* | **true** |
 
