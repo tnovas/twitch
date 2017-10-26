@@ -26,6 +26,7 @@
     "axios": "^0.16.2",
     "express": "^4.16.2",
     "oauth20": "^2.0.2",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "twitch-irc-lite": "^1.0.4"
   }
 }
