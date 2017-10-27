@@ -7,14 +7,12 @@ let urlsTwitch = Symbol('urlsTwitch');
 let getTwitch = Symbol('getTwitch');
 
 class Twitch extends OAuth2 {
-	constructor(clientId, clientSecret, redirectUrl, scopes, userLogin, chatName, accessToken='') {
+	constructor(clientId, clientSecret, redirectUrl, scopes, userLogin, accessToken='') {
 		super(clientId, clientSecret, redirectUrl, scopes, accessToken, 'https://api.twitch.tv/kraken/oauth2/');
 		
 		this[credentialsTwitch] = {
 			userLogin: userLogin,
 			clientId: clientId,
-			chatChannel: userLogin,
-			chatName: chatName,
 			userId: ''
 		};
 		
@@ -29,8 +27,8 @@ class Twitch extends OAuth2 {
 	}
 
 	connectChat() {
-		this[chatTwitch] = new irc(`oauth:${this.getCredentials().accessToken}`, this[credentialsTwitch].chatName);
-		this[chatTwitch].join(this[credentialsTwitch].chatChannel);
+		this[chatTwitch] = new irc(`oauth:${this.getCredentials().accessToken}`, this[credentialsTwitch].userLogin);
+		this[chatTwitch].join(this[credentialsTwitch].userLogin);
 	}
 
 	getStream() {
@@ -42,7 +40,7 @@ class Twitch extends OAuth2 {
 		return this[getTwitch](url, params);
 	}
 
-	liveChat(callback) {
+	chat(callback) {
 		this[chatTwitch].chatEvents.addListener('message', (channel, from, msg) => {
 			callback(from, msg);
 		});

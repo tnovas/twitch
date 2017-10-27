@@ -14,7 +14,7 @@ describe('Twitch', () => {
 			"clientSecret", 
 			"redirectUrl", 
 			"scopes",
-			"channel"
+			"userLogin"
 		);
 
 	    credentials = {
@@ -22,7 +22,7 @@ describe('Twitch', () => {
 			clientSecret: "clientSecret", 
 			redirectUrl: "redirectUrl", 
 			scopes: "scopes",
-			userId: "userId"
+			userLogin: "userLogin"
 	    };
 
 	    urls = {
@@ -64,6 +64,20 @@ describe('Twitch', () => {
 		mock.onGet(urls.streams).replyOnce(200, {viewer_count: 1000});
 
 		twitch.getStream().then((response) => expect(JSON.stringify(response.data)).to.equal(JSON.stringify(stream)));
+	});
+
+	it('getStream() should throw error with a message', () => {	
+		mock.onGet(urls.streams).replyOnce(500, { error: 'error' });
+
+		twitch.getStream().catch((err) => expect(500).to.equal(err.response.status));
+	});	
+
+	it('connectChat() should connect to chat', () => {	
+		twitch.connectChat();
+	});
+
+	it('chat() should get chat', () => {	
+		twitch.chat((user, msg)=> console.log(`${user}${msg}`));
 	});
 
 	it('getStream() should throw error with a message', () => {	

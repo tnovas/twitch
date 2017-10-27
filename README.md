@@ -33,7 +33,7 @@ Give the credentials of the youtube to the constructor
 | **AccessToken**  | *The access token if you have one* | **true** |
 
 ```js
-let twitch = new twitchApi('clientId', 'clientSecret', 'http://yourdomain/youraction', 'user:edit+user:read:email', 'channelName');
+let twitch = new twitchApi('clientId', 'clientSecret', 'http://yourdomain/youraction', 'user:edit+user:read:email+chat_login', 'channelName');
 ```
 
 ### Authorization
@@ -70,6 +70,14 @@ For get your stream information you have to call `getStream`
 
 ```js
 twitch.getStream();
+```
+
+### Get Chat:
+For get message chat you have to call first to `connectChat` and then call `chat`
+
+```js
+twitch.connectChat();
+twitch.chat(callback);
 ```
 
 ### Get Credentials:
